@@ -11,19 +11,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 type RegisterUserData = {
-  email: string;
   password: string;
   confirmPassword: string;
 }
 
 const RegisterUserFormSchema = yup.object({
-  email: yup.string().required('O e-mail é obrigatório').email('Deve ser um e-mail valido'),
   password: yup.string().required('A senha é obrigatório').min(8, 'Deve contem 8 caracteres no minimo'),
   confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'As senha não coincidem').required('A confirmação da senha é obrigatória')
 })
 
 
 import logo from '../assets/icons/logo.png'
+import { useEffect } from 'react'
 
 
 export default function SignUp() {
@@ -31,7 +30,7 @@ export default function SignUp() {
 
   const supabase = useSupabaseClient()
 
-  const notify = () => toast.success('Confirme o seu e-mail', {
+  const notify = () => toast.success('Sua senha foi alterada com sucesso', {
     position: "top-center",
     autoClose: 10000,
     hideProgressBar: false,
@@ -49,8 +48,7 @@ export default function SignUp() {
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: userData.email,
+      const { data, error } = await supabase.auth.updateUser({
         password: userData.password,
       })
 
@@ -64,6 +62,8 @@ export default function SignUp() {
     }
     
   }
+
+
   return (
     <>
     <div className='h-screen w-screen bg-fundo py-2 sm:flex  sm:flex-col'>
@@ -76,21 +76,12 @@ export default function SignUp() {
       
 
             <p className='pl-5 sm:text-4xl text-white font-bold'>Bem vindo</p>
-            <p className='pl-5 sm:text-base text-white'>Realize o seu cadastro</p>
+            <p className='pl-5 sm:text-base text-white'>Altere a sua senha!</p>
 
 
 
 
           <form onSubmit={handleSubmit(handleRegisterUser)} className='flex justify-center mx-4 flex-col bg-white p-5 rounded-xl mt-6 sm:w-6/6 sm:h-2/5'>
-            {/* <label htmlFor="name">
-            <span className='text-black font-bold'>Nome: </span><br></br>
-              <input className='bg-white text-black h-11 w-64 mb-1 rounded-lg mt-2 border-2 border-black' type="text"/>
-            </label> */}
-            <label htmlFor="email">
-              <span className='text-black font-bold'>E-mail: </span><br></br>
-              <input placeholder='E-mail' className='bg-white  text-black h-11 w-64 mb-1 rounded-lg mt-2 border-2 border-black' type="text"  name='email' {...register('email')}/>
-              <p>{errors.email?.message}</p>
-            </label>
             <label htmlFor="password">
               <span className='text-black font-bold'>Senha:</span><br></br>
               <input placeholder='Digite a sua senha' className='bg-white  text-black h-11 w-64 mb-1 rounded-lg mt-2 border-2 border-black' type="password" name='password' {...register('password')}/>
@@ -103,7 +94,7 @@ export default function SignUp() {
             </label>
 
             
-            <button className='w-full h-8 mt-5 bg-blue-500 rounded-md text-white' type='submit'>Registrar</button>
+            <button className='w-full h-8 mt-5 bg-blue-500 rounded-md text-white' type='submit'>Altere sua senha</button>
 
             <div className='mt-6 flex justify-end'>
               <span className='text-gray-700'>Já tem uma conta?</span>
